@@ -1,5 +1,5 @@
 # Defines a base for our image
-FROM python:3.9-alpine
+FROM python:3.8-alpine
 
 # Sets the working directory for instructions (ADD, COPY, CMD, RUN and ENTRYPOINT)
 WORKDIR /usr/src/app
