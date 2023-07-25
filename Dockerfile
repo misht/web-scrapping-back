@@ -16,7 +16,7 @@ EXPOSE 5000
 
 # Define the program that is run once the container is started.
 # --Host is used to enable the server in public mode
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]
+CMD [ "python3", "-m" , "flask", "run", "--reload" ,"--host=0.0.0.0" ]
 
 # To execute: (You should be inside web-scrapping-back directory)
 # docker build --tag web-scrapping-back .
