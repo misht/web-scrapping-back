@@ -1,5 +1,5 @@
 # Defines a base for our image
-FROM python:3.8-alpine
+FROM python:3.10-alpine
 
 # Sets the working directory for instructions (ADD, COPY, CMD, RUN and ENTRYPOINT)
 WORKDIR /usr/src/app
@@ -16,7 +16,7 @@ EXPOSE 5000
 
 # Define the program that is run once the container is started.
 # --Host is used to enable the server in public mode
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0" ]
+CMD [ "python3", "-m" , "flask", "--debug", "run", "--host=0.0.0.0" ]
 
 # To execute: (You should be inside web-scrapping-back directory)
 # docker build --tag web-scrapping-back .

@@ -1,5 +1,7 @@
+from src.adapters.publications.blueprints import PublicationBlueprint
 from src.adapters.user.blueprints import *
 from src.domain.base import RepositoryBind, ServiceBind, UseCaseBind, MapperBind
+from src.domain.publications.usecases import PublicationUseCase
 
 
 class Repositories(RepositoryBind):
@@ -14,7 +16,7 @@ class Services(ServiceBind):
 
 class UseCases(UseCaseBind):
     def __init__(self):
-        self.a = 1
+        self.publication_use_case = PublicationUseCase()
 
 
 class Mappers(MapperBind):
@@ -26,8 +28,9 @@ class Bind:
     def __init__(self):
         repositories = Repositories()
         services = Services()
-        use_case = UseCases()
+        use_cases = UseCases()
         mappers = Mappers()
         self.blueprints = [
-            UserBlueprint.create()
+            UserBlueprint.create(),
+            PublicationBlueprint.create(use_cases)
         ]
