@@ -3,7 +3,7 @@ from serpapi import GoogleSearch
 
 class PublicationUseCase(UseCase):
 
-    def search_publications(self, query: str):
+    def search_publications(self, query: str, start: int):
         params = {
             "engine": "google_scholar",
             "q": query,

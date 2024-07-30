@@ -10,7 +10,10 @@ class PublicationBlueprint(Blueprint):
         @blueprint.route('/search_publications', methods=('GET',))
         def search_publications():
             query = flask.request.args.get("query")
-            publications = use_cases.publication_use_case.search_publications(query)
-            return flask.jsonify(publications)
+            start = flask.request.args.get("start")
+            publications = use_cases.publication_use_case.search_publications(query, int(start))
+            response = flask.jsonify(publications)
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
 
         return blueprint
