@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from src.domain.base import Entity
 
@@ -56,7 +56,7 @@ class DataGraph(Entity):
                 format(self.year,
                        self.citations))
 
-class Author(Entity):
+class AuthorInfo(Entity):
 
     def __init__(self, name: str, affiliations: str, interests: List[Interest], picture: str,
                  article_info: ArticleInfo, data_table: DataTable, data_graph_list: List[DataGraph]):
@@ -70,7 +70,7 @@ class Author(Entity):
         self.open_to_collaborate = True
 
     def __repr__(self):
-        return ("<Author name={}, "
+        return ("<AuthorInfo name={}, "
                 "affiliations={}, "
                 "={}, "
                 "picture={}, "
@@ -86,3 +86,43 @@ class Author(Entity):
                        self.data_table,
                        self.data_graph_list,
                        self.open_to_collaborate))
+
+class Author(Entity):
+
+    def __init__(self, name: str, author_id: str, affiliations: str, cited_by: int, picture: str,
+                 interests: List[Interest]):
+        self.name = name
+        self.author_id = author_id
+        self.affiliations = affiliations
+        self.cited_by = cited_by
+        self.picture = picture
+        self.interests = interests
+        self.open_to_collaborate = False
+
+    def __repr__(self):
+        return ("<Author name={}, "
+                "author_id={}, "
+                "affiliations={}, "
+                "cited_by={}, "
+                "picture={},  "
+                "interests={}, "
+                "open_to_collaborate?={}>".
+                format(self.name,
+                       self.author_id,
+                       self.affiliations,
+                       self.cited_by,
+                       self.picture,
+                       self.interests,
+                       self.open_to_collaborate))
+
+
+class Pagination(Entity):
+    def __init__(self, next_page: str, previous_page: str):
+        self.next_page = next_page
+        self.previous_page = previous_page
+
+    def __repr__(self):
+        return ("<Pagination next_page={}, "
+                "previous_page={}>".
+                format(self.next_page,
+                       self.previous_page))

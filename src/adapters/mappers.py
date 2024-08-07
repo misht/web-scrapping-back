@@ -1,6 +1,6 @@
 from typing import Dict, Any
 
-from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest
+from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest, Pagination, AuthorInfo
 from src.domain.base import Mapper, Error
 
 
@@ -57,25 +57,53 @@ class DataGraphMapper(BaseMapper):
             "citations": data_graph.citations
         }
 
-class AuthorMapper(BaseMapper):
+class AuthorInfoMapper(BaseMapper):
 
-    def __init__(self, article_info_mapper, interest_mapper, data_table_mapper,
-                 data_graph_mapper):
+    def __init__(self, article_info_mapper, interest_mapper, data_table_mapper, data_graph_mapper):
         self.article_info_mapper = article_info_mapper
         self.interest_mapper = interest_mapper
         self.data_table_mapper = data_table_mapper
         self.data_graph_mapper = data_graph_mapper
 
+    def to_dict(self, author_info: AuthorInfo) -> Dict[str, Any]:
+        return {
+            "name": author_info.name,
+            "affiliations": author_info.affiliations,
+            "interests": [self.interest_mapper.to_dict(interest) for interest in author_info.interests],
+            "picture": author_info.picture,
+            "articles": self.article_info_mapper.to_dict(author_info.article_info),
+            "cited_by": {
+                "table": self.data_table_mapper.to_dict(author_info.data_table),
+                "graph": [self.data_graph_mapper.to_dict(data_graph) for data_graph in author_info.data_graph_list]
+            },
+            "open_to_collaborate": author_info.open_to_collaborate
+        }
+
+
+class PaginationMapper(BaseMapper):
+
+    def to_dict(self, pagination: Pagination) -> Dict[str, str]:
+        pagination_dict = {}
+        if pagination.next_page:
+            pagination_dict["next_page"] = pagination.next_page
+        if pagination.previous_page:
+            pagination_dict["previous_page"] = pagination.previous_page
+        return pagination_dict
+
+
+class AuthorMapper(BaseMapper):
+
+    def __init__(self, interest_mapper, pagination_mapper):
+        self.interest_mapper = interest_mapper
+        self.pagination_mapper = pagination_mapper
+
     def to_dict(self, author: Author) -> Dict[str, Any]:
         return {
             "name": author.name,
+            "author_id": author.author_id,
             "affiliations": author.affiliations,
-            "interest": [self.interest_mapper.to_dict(interest) for interest in author.interests],
+            "cited_by": author.cited_by,
             "picture": author.picture,
-            "articles": self.article_info_mapper.to_dict(author.article_info),
-            "cited_by": {
-                "table": self.data_table_mapper.to_dict(author.data_table),
-                "graph": [self.data_graph_mapper.to_dict(data_graph) for data_graph in author.data_graph_list]
-            },
+            "interests": [self.interest_mapper.to_dict(interest) for interest in author.interests],
             "open_to_collaborate": author.open_to_collaborate
         }
