@@ -69,16 +69,16 @@ class Error(Exception):
 
     @classmethod
     def bad_request(cls, *, error_code: str, message: str = 'Bad request'):
-        return Error(400, message, error_code, message)
+        return Error(400, message, error_code)
 
     @classmethod
     def unauthorized(cls, *, error_code: str, message: str = 'Unauthorized'):
-        return Error(401, message, error_code, message)
+        return Error(401, message, error_code)
 
     @classmethod
     def invalid_configuration(cls, *, error_code: str = INVALID_CONFIGURATION_CODE,
                               message: str = 'Invalid configuration'):
-        return Error(500, message, error_code, message)
+        return Error(500, message, error_code)
 
     @classmethod
     def not_found(cls, *, error_code: str =  NOT_FOUND_CODE, message: str = 'Not found'):

@@ -1,6 +1,7 @@
 from typing import Dict, Any
 
 from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest
+from src.domain.user.model import User
 from src.domain.base import Mapper, Error
 
 
@@ -79,3 +80,21 @@ class AuthorMapper(BaseMapper):
             },
             "open_to_collaborate": author.open_to_collaborate
         }
+
+class UserMapper(BaseMapper):
+
+    def __parse_dict__(self, user_dict: Dict):
+        if "name" not in user_dict or "email" not in user_dict or "password" not in user_dict:
+            raise Error.bad_request(message="Missing required keys: name, email, password",
+                                    error_code=Error.INCOMPLETE_DATA_CODE)
+        if not type(user_dict["name"]) == str or not type(user_dict["email"]) == str \
+            or not type(user_dict["password"]) == str:
+            raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        return User(name=user_dict["name"],
+                    email=user_dict["email"],
+                    password=user_dict["password"])
+
+    def to_dict(self, user: User) -> Dict[str, Any]:
+        return {"name": user.name,
+                "email": user.email}

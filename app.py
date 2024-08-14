@@ -3,6 +3,8 @@ import flask
 import src
 from src.bind import Bind
 from src.domain.base import Error
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 app = None
 bind = None
@@ -13,6 +15,12 @@ def register_blueprints():
         app.register_blueprint(blueprint, url_prefix='/api')
 
 
+def initialize_bd():
+    cred = credentials.Certificate(
+        "/home/mistigs/entorno_des/web-scrapping-back/src/wecollaborate1-10579-firebase-adminsdk-lst8w-494ba04746.json")
+    firebase_admin.initialize_app(cred)
+
+
 def create_app():
     global app
     global bind
@@ -21,7 +29,7 @@ def create_app():
         # configuration = config.get_config()
         # app.config.from_object(configuration)
         # app.config.from_pyfile('config.py', silent=True)
-
+        initialize_bd()
         bind = Bind()
         register_blueprints()
 

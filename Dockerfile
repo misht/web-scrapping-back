@@ -21,3 +21,4 @@ CMD [ "python3", "-m" , "flask", "--debug", "run", "--host=0.0.0.0" ]
 # To execute: (You should be inside web-scrapping-back directory)
 # docker build --tag web-scrapping-back .
 # docker run -p 5000:5000 web-scrapping-back
+# python3 -m flask --debug run
