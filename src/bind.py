@@ -35,6 +35,7 @@ class Mappers(MapperBind):
         self.author_mapper = AuthorMapper(self.article_info_mapper, self.interest_mapper, self.data_table_mapper,
                                           self.data_graph_mapper)
         self.user_mapper = UserMapper()
+        self.user_login_mapper = UserLoginMapper()
 
 
 class Bind:

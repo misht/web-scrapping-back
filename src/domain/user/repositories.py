@@ -7,3 +7,7 @@ class UserRepository(Repository):
     @abstractmethod
     def save(self, user: User) -> User:
         pass
+
+    @abstractmethod
+    def get_user_by_email(self, user: User) -> User:
+        pass

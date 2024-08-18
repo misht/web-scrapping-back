@@ -61,7 +61,7 @@ class Error(Exception):
     NOT_FOUND_CODE = "NOT_FOUND"
 
     def __init__(self, code: int, message: str, error_code: str):
-        super(Error).__init__(message)
+        super(Error, self).__init__(message)
         self.code = code
         self.message = message
         self.error_code = error_code
@@ -82,4 +82,4 @@ class Error(Exception):
 
     @classmethod
     def not_found(cls, *, error_code: str =  NOT_FOUND_CODE, message: str = 'Not found'):
-        return Error(404, message, error_code, message)
+        return Error(404, message, error_code)

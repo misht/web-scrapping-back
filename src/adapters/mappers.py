@@ -1,7 +1,7 @@
 from typing import Dict, Any
 
 from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest
-from src.domain.user.model import User
+from src.domain.user.model import User, Login
 from src.domain.base import Mapper, Error
 
 
@@ -83,18 +83,36 @@ class AuthorMapper(BaseMapper):
 
 class UserMapper(BaseMapper):
 
-    def __parse_dict__(self, user_dict: Dict):
-        if "name" not in user_dict or "email" not in user_dict or "password" not in user_dict:
-            raise Error.bad_request(message="Missing required keys: name, email, password",
+    def __parse_dict__(self, user_dict: Dict) -> User:
+        if "name" not in user_dict or "email" not in user_dict \
+                or "password" not in user_dict or "open_to_collaborate" not in user_dict:
+            raise Error.bad_request(message="Missing required keys: name, email, password and open_to_collaborate",
                                     error_code=Error.INCOMPLETE_DATA_CODE)
         if not type(user_dict["name"]) == str or not type(user_dict["email"]) == str \
-            or not type(user_dict["password"]) == str:
+            or not type(user_dict["password"]) == str or not type(user_dict["open_to_collaborate"]) == bool:
             raise Error.bad_request(message="Data type is invalid.",
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
         return User(name=user_dict["name"],
                     email=user_dict["email"],
-                    password=user_dict["password"])
+                    password=user_dict["password"],
+                    open_to_collaborate=user_dict["open_to_collaborate"])
 
     def to_dict(self, user: User) -> Dict[str, Any]:
         return {"name": user.name,
-                "email": user.email}
+                "email": user.email,
+                "open_to_collaborate": user.open_to_collaborate}
+
+
+class UserLoginMapper(BaseMapper):
+
+    def __parse_dict__(self, login_dict: Dict) -> User:
+        if "email" not in login_dict or "password" not in login_dict:
+            raise Error.bad_request(message="Missing required keys: name and email",
+                                    error_code=Error.INCOMPLETE_DATA_CODE)
+        if not type(login_dict["email"]) == str or not type(login_dict["password"]) == str:
+            raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        return User(name="",
+                    email=login_dict["email"],
+                    password=login_dict["password"],
+                    open_to_collaborate=False)
