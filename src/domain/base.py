@@ -61,7 +61,7 @@ class Error(Exception):
     NOT_FOUND_CODE = "NOT_FOUND"
 
     def __init__(self, code: int, message: str, error_code: str):
-        super(Error).__init__(message)
+        super(Error, self).__init__(message)
         self.code = code
         self.message = message
         self.error_code = error_code
@@ -69,17 +69,17 @@ class Error(Exception):
 
     @classmethod
     def bad_request(cls, *, error_code: str, message: str = 'Bad request'):
-        return Error(400, message, error_code, message)
+        return Error(400, message, error_code)
 
     @classmethod
     def unauthorized(cls, *, error_code: str, message: str = 'Unauthorized'):
-        return Error(401, message, error_code, message)
+        return Error(401, message, error_code)
 
     @classmethod
     def invalid_configuration(cls, *, error_code: str = INVALID_CONFIGURATION_CODE,
                               message: str = 'Invalid configuration'):
-        return Error(500, message, error_code, message)
+        return Error(500, message, error_code)
 
     @classmethod
     def not_found(cls, *, error_code: str =  NOT_FOUND_CODE, message: str = 'Not found'):
-        return Error(404, message, error_code, message)
+        return Error(404, message, error_code)

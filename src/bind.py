@@ -5,11 +5,13 @@ from src.domain.base import RepositoryBind, ServiceBind, UseCaseBind, MapperBind
 from src.domain.publication.usecases import *
 from src.domain.author.usecases import *
 from src.adapters.mappers import *
+from src.adapters.user.repositories import *
+from src.domain.user.usecases import UserUseCase
 
 
 class Repositories(RepositoryBind):
     def __init__(self):
-        self.a = 1
+        self.user_repository = FirestoreUserRepository()
 
 
 class Services(ServiceBind):
@@ -18,9 +20,10 @@ class Services(ServiceBind):
 
 
 class UseCases(UseCaseBind):
-    def __init__(self):
+    def __init__(self, repositories: RepositoryBind):
         self.publication_use_case = PublicationUseCase()
         self.author_use_case = AuthorUseCase()
+        self.user_use_case = UserUseCase(repositories)
 
 
 class Mappers(MapperBind):
@@ -33,16 +36,18 @@ class Mappers(MapperBind):
                                                    self.data_graph_mapper)
         self.pagination_mapper = PaginationMapper()
         self.author_mapper = AuthorMapper(self.interest_mapper, self.pagination_mapper)
+        self.user_mapper = UserMapper()
+        self.user_login_mapper = UserLoginMapper()
 
 
 class Bind:
     def __init__(self):
         repositories = Repositories()
         services = Services()
-        use_cases = UseCases()
+        use_cases = UseCases(repositories)
         mappers = Mappers()
         self.blueprints = [
-            UserBlueprint.create(),
+            UserBlueprint.create(use_cases, mappers),
             PublicationBlueprint.create(use_cases),
             AuthorBlueprint.create(use_cases, mappers)
         ]
