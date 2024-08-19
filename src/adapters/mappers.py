@@ -1,8 +1,10 @@
 from typing import Dict, Any
 
+from src.domain.admin.model import Config
 from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest, Pagination, AuthorInfo
-from src.domain.user.model import User, Login
 from src.domain.base import Mapper, Error
+from src.domain.user.model import User
+from config import Configuration
 
 
 class BaseMapper(Mapper):
@@ -114,17 +116,24 @@ class UserMapper(BaseMapper):
 
     def __parse_dict__(self, user_dict: Dict) -> User:
         if "name" not in user_dict or "email" not in user_dict \
-                or "password" not in user_dict or "open_to_collaborate" not in user_dict:
-            raise Error.bad_request(message="Missing required keys: name, email, password and open_to_collaborate",
+            or "password" not in user_dict or "open_to_collaborate" not in user_dict \
+                or "user_terms_acceptance" not in user_dict:
+            raise Error.bad_request(message="Missing required keys: name, email, password, "
+                                            "open_to_collaborate and user_terms_acceptance",
                                     error_code=Error.INCOMPLETE_DATA_CODE)
         if not type(user_dict["name"]) == str or not type(user_dict["email"]) == str \
-            or not type(user_dict["password"]) == str or not type(user_dict["open_to_collaborate"]) == bool:
+            or not type(user_dict["password"]) == str or not type(user_dict["open_to_collaborate"]) == bool \
+                or not type(user_dict["user_terms_acceptance"]) == bool:
             raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        if len(user_dict["password"]) < Configuration.MINIMUM_NUMBER_CHARACTERS_FROM_PASSWORD:
+            raise Error.bad_request(message="Password should be at least 8 characters.",
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
         return User(name=user_dict["name"],
                     email=user_dict["email"],
                     password=user_dict["password"],
-                    open_to_collaborate=user_dict["open_to_collaborate"])
+                    open_to_collaborate=user_dict["open_to_collaborate"],
+                    user_terms_acceptance=user_dict["user_terms_acceptance"])
 
     def to_dict(self, user: User) -> Dict[str, Any]:
         return {"name": user.name,
@@ -141,7 +150,27 @@ class UserLoginMapper(BaseMapper):
         if not type(login_dict["email"]) == str or not type(login_dict["password"]) == str:
             raise Error.bad_request(message="Data type is invalid.",
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
+        if len(login_dict["password"]) < Configuration.MINIMUM_NUMBER_CHARACTERS_FROM_PASSWORD:
+            raise Error.bad_request(message="Password should be at least 8 characters.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
         return User(name="",
                     email=login_dict["email"],
                     password=login_dict["password"],
-                    open_to_collaborate=False)
+                    open_to_collaborate=False,
+                    user_terms_acceptance=True)
+
+
+class ConfigMapper(BaseMapper):
+
+    def __parse_dict__(self, config_dict: Dict) -> Config:
+        if "key" not in config_dict or "value" not in config_dict:
+            raise Error.bad_request(message="Missing required keys: key and value",
+                                    error_code=Error.INCOMPLETE_DATA_CODE)
+        if not type(config_dict["key"]) == str or not type(config_dict["value"]) == str:
+            raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        return Config(key=config_dict["key"],
+                      value=config_dict["value"])
+
+    def to_dict(self, config: Config) -> Dict[str, Any]:
+        return {"value": config.value}

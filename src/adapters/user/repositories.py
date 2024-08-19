@@ -6,6 +6,7 @@ from src.domain.user.repositories import UserRepository
 
 
 class FirestoreUserRepository(FirestoreRepository, UserRepository):
+
     def __get_name__(self, user: User) -> str:
         return user.email
 
@@ -13,13 +14,15 @@ class FirestoreUserRepository(FirestoreRepository, UserRepository):
         return {"name": user.name,
                 "email": user.email,
                 "password": user.password,
-                "open_to_collaborate": user.open_to_collaborate}
+                "open_to_collaborate": user.open_to_collaborate,
+                "user_terms_acceptance": user.user_terms_acceptance}
 
     def __entity_to_object__(self, entity: Dict[str, any]) -> User:
         return User(name=entity["name"],
                     email=entity["email"],
                     password=entity["password"],
-                    open_to_collaborate=entity["open_to_collaborate"])
+                    open_to_collaborate=entity["open_to_collaborate"],
+                    user_terms_acceptance=entity.get("user_terms_acceptance", True))
 
     def save(self, user: User) -> User:
         self.__save__(user)

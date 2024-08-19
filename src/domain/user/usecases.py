@@ -1,13 +1,15 @@
+from src.domain.admin.model import Config
+from src.domain.base import Error
 from src.domain.base import RepositoryBind
 from src.domain.base import UseCase
 from src.domain.user.model import User
-from src.domain.base import Error
 
 
 class UserUseCase(UseCase):
 
     def __init__(self, repositories: RepositoryBind):
         self.user_repository = repositories.user_repository
+        self.config_repository = repositories.config_repository
 
     def login(self, user: User) -> User:
         user_exist = self.user_repository.get_user_by_email(user)
@@ -26,3 +28,11 @@ class UserUseCase(UseCase):
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
         user = self.user_repository.save(user)
         return user
+
+    def get_privacy_terms(self) -> Config:
+        privacy_terms = self.config_repository.get_by_key(Config(key='privacy_terms'))
+        return privacy_terms
+
+    def get_user_terms(self) -> Config:
+        user_terms = self.config_repository.get_by_key(Config(key='user_terms'))
+        return user_terms

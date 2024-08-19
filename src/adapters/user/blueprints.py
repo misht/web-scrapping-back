@@ -19,5 +19,14 @@ class UserBlueprint(Blueprint):
             saved_user = use_cases.user_use_case.sign_up(user)
             return flask.jsonify(mappers.user_mapper.to_dict(saved_user))
 
-        return blueprint
+        @blueprint.route('/privacy_terms', methods=('GET',))
+        def get_privacy_terms():
+            privacy_terms = use_cases.user_use_case.get_privacy_terms()
+            return flask.jsonify(mappers.config_mapper.to_dict(privacy_terms))
 
+        @blueprint.route('/user_terms', methods=('GET',))
+        def get_user_terms():
+            user_terms = use_cases.user_use_case.get_user_terms()
+            return flask.jsonify(mappers.config_mapper.to_dict(user_terms))
+
+        return blueprint
