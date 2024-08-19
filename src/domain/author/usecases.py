@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Any, Tuple
 from serpapi import GoogleSearch
 
 from src.domain.author.model import DataTable, DataGraph, ArticleInfo, AuthorInfo, Interest, \
-    Author, Pagination
+    Author, Pagination, Article
 from src.domain.base import UseCase
 from src.domain.base import Error
 
@@ -18,14 +18,16 @@ class AuthorUseCase(UseCase):
         }
         search = GoogleSearch(params)
         results = search.get_dict()
-        article_info = self.__get_articles_info__(results.get("public_access"))
-        data_table = self.__get_data_table__(results.get("cited_by").get("table"))
-        data_graph_list = self.__get_data_graph_list__(results.get("cited_by").get("graph"))
-        author = self.__get_author_info__(results.get("author"), article_info, data_table, data_graph_list)
+        article_info = self.__get_articles_info__(results.get("public_access", {}))
+        data_table = self.__get_data_table__(results.get("cited_by", {}).get("table"))
+        data_graph_list = self.__get_data_graph_list__(results.get("cited_by", {}).get("graph"))
+        articles = self.__get_articles__(results.get("articles", []))
+        author = self.__get_author_info__(results.get("author", {}), article_info, data_table, data_graph_list,
+                                          articles)
         return author
 
     def __get_author_info__(self, author: Dict[str, str], article_info: ArticleInfo, data_table: DataTable,
-                            data_graph_list: List[DataGraph]) -> AuthorInfo:
+                            data_graph_list: List[DataGraph], articles: List[Article]) -> AuthorInfo:
         interests = self.__get_interests__(author.get("interests", []))
         return AuthorInfo(name=author.get("name"),
                           affiliations=author.get("affiliations"),
@@ -33,7 +35,8 @@ class AuthorUseCase(UseCase):
                           picture=author.get("thumbnail"),
                           article_info=article_info,
                           data_table=data_table,
-                          data_graph_list=data_graph_list)
+                          data_graph_list=data_graph_list,
+                          articles=articles)
 
     def __get_interests__(self, interest_list: List[Dict]) -> List[Interest]:
         interests = []
@@ -65,6 +68,18 @@ class AuthorUseCase(UseCase):
                 data_graph_list.append(DataGraph(year=graph.get("year"),
                                                  citations=graph.get("citations")))
         return data_graph_list
+
+    def __get_articles__(self, article_list: List[Dict[str, str]]) -> List[Article]:
+        articles = []
+        for article in article_list:
+            articles.append(Article(title=article.get("title"),
+                                    link=article.get("link"),
+                                    authors=article.get("authors"),
+                                    cited_by=article.get("cited_by", {}).get("value", 0),
+                                    year=article.get("year")))
+        return articles
+
+
 
     def search_authors_by_interests(self, label: str, next_page: Optional[str],
                                    previous_page: Optional[str]) -> Tuple[List[Author], Pagination]:

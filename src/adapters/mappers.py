@@ -1,7 +1,8 @@
 from typing import Dict, Any
 
 from src.domain.admin.model import Config
-from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest, Pagination, AuthorInfo
+from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest, Pagination, AuthorInfo, \
+    Article
 from src.domain.base import Mapper, Error
 from src.domain.user.model import User
 from config import Configuration
@@ -60,13 +61,27 @@ class DataGraphMapper(BaseMapper):
             "citations": data_graph.citations
         }
 
+
+class ArticleMapper(BaseMapper):
+
+    def to_dict(self, article: Article) -> Dict[str, int]:
+        return {
+            "title": article.title,
+            "link": article.link,
+            "authors": article.authors,
+            "cited_by": article.cited_by,
+            "year": article.year
+        }
+
+
 class AuthorInfoMapper(BaseMapper):
 
-    def __init__(self, article_info_mapper, interest_mapper, data_table_mapper, data_graph_mapper):
+    def __init__(self, article_info_mapper, interest_mapper, data_table_mapper, data_graph_mapper, article_mapper):
         self.article_info_mapper = article_info_mapper
         self.interest_mapper = interest_mapper
         self.data_table_mapper = data_table_mapper
         self.data_graph_mapper = data_graph_mapper
+        self.article_mapper = article_mapper
 
     def to_dict(self, author_info: AuthorInfo) -> Dict[str, Any]:
         return {
@@ -74,11 +89,12 @@ class AuthorInfoMapper(BaseMapper):
             "affiliations": author_info.affiliations,
             "interests": [self.interest_mapper.to_dict(interest) for interest in author_info.interests],
             "picture": author_info.picture,
-            "articles": self.article_info_mapper.to_dict(author_info.article_info),
+            "article_info": self.article_info_mapper.to_dict(author_info.article_info),
             "cited_by": {
                 "table": self.data_table_mapper.to_dict(author_info.data_table),
                 "graph": [self.data_graph_mapper.to_dict(data_graph) for data_graph in author_info.data_graph_list]
             },
+            "articles": [self.article_mapper.to_dict(article) for article in author_info.articles],
             "open_to_collaborate": author_info.open_to_collaborate
         }
 

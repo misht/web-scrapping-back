@@ -37,8 +37,9 @@ class Mappers(MapperBind):
         self.interest_mapper = InterestMapper()
         self.data_table_mapper = DataTableMapper()
         self.data_graph_mapper = DataGraphMapper()
+        self.article_mapper = ArticleMapper()
         self.author_info_mapper = AuthorInfoMapper(self.article_info_mapper, self.interest_mapper, self.data_table_mapper,
-                                                   self.data_graph_mapper)
+                                                   self.data_graph_mapper, self.article_mapper)
         self.pagination_mapper = PaginationMapper()
         self.author_mapper = AuthorMapper(self.interest_mapper, self.pagination_mapper)
         self.user_mapper = UserMapper()

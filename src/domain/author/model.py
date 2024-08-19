@@ -56,10 +56,33 @@ class DataGraph(Entity):
                 format(self.year,
                        self.citations))
 
+
+class Article(Entity):
+    def __init__(self, title: str, link: str, authors: str, cited_by: int, year: str):
+        self.title = title
+        self.link = link
+        self.authors = authors
+        self.cited_by = cited_by
+        self.year = year
+
+    def __repr__(self):
+        return ("<Article title={}, "
+                "link={}, "
+                "authors={}, "
+                "cited_by={}, "
+                "year={}>".
+                format(self.title,
+                       self.link,
+                       self.authors,
+                       self.cited_by,
+                       self.year))
+
+
 class AuthorInfo(Entity):
 
     def __init__(self, name: str, affiliations: str, interests: List[Interest], picture: str,
-                 article_info: ArticleInfo, data_table: DataTable, data_graph_list: List[DataGraph]):
+                 article_info: ArticleInfo, data_table: DataTable, data_graph_list: List[DataGraph],
+                 articles: List[Article]):
         self.name = name
         self.affiliations = affiliations
         self.interests = interests
@@ -67,6 +90,7 @@ class AuthorInfo(Entity):
         self.article_info = article_info
         self.data_table = data_table
         self.data_graph_list = data_graph_list
+        self.articles = articles
         self.open_to_collaborate = True
 
     def __repr__(self):
