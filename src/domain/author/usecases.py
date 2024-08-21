@@ -50,10 +50,10 @@ class AuthorUseCase(UseCase):
     def __get_articles_info__(self, public_access: Dict[str, Any]) -> ArticleInfo:
         available = public_access.get("available", 0)
         not_available = public_access.get("not_available", 0)
-        total_number_articles = available +  not_available
+        total_number_articles = available + not_available
         return ArticleInfo(total_number_articles=total_number_articles,
-                           not_available=available,
-                           available=not_available)
+                           not_available=not_available,
+                           available=available)
 
     def __get_total_citations__(self, table: List[Dict]) -> Optional[int]:
         total_citations = None
