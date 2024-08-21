@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Any, Tuple
 
 from serpapi import GoogleSearch
 
-from src.domain.author.model import DataTable, DataGraph, ArticleInfo, AuthorInfo, Interest, \
+from src.domain.author.model import DataGraph, ArticleInfo, AuthorInfo, Interest, \
     Author, Pagination, Article
 from src.domain.base import UseCase
 from src.domain.base import Error
@@ -19,24 +19,26 @@ class AuthorUseCase(UseCase):
         search = GoogleSearch(params)
         results = search.get_dict()
         article_info = self.__get_articles_info__(results.get("public_access", {}))
-        data_table = self.__get_data_table__(results.get("cited_by", {}).get("table"))
+        total_citations = self.__get_total_citations__(results.get("cited_by", {}).get("table"))
         data_graph_list = self.__get_data_graph_list__(results.get("cited_by", {}).get("graph"))
+        average = self.__get_average__(data_graph_list)
         articles = self.__get_articles__(results.get("articles", []))
-        author = self.__get_author_info__(results.get("author", {}), article_info, data_table, data_graph_list,
-                                          articles)
+        author = self.__get_author_info__(results.get("author", {}), article_info, total_citations, data_graph_list,
+                                          articles, average)
         return author
 
-    def __get_author_info__(self, author: Dict[str, str], article_info: ArticleInfo, data_table: DataTable,
-                            data_graph_list: List[DataGraph], articles: List[Article]) -> AuthorInfo:
+    def __get_author_info__(self, author: Dict[str, str], article_info: ArticleInfo, total_citations: int,
+                            data_graph_list: List[DataGraph], articles: List[Article], average: int) -> AuthorInfo:
         interests = self.__get_interests__(author.get("interests", []))
         return AuthorInfo(name=author.get("name"),
                           affiliations=author.get("affiliations"),
                           interests=interests,
                           picture=author.get("thumbnail"),
                           article_info=article_info,
-                          data_table=data_table,
+                          total_citations=total_citations,
                           data_graph_list=data_graph_list,
-                          articles=articles)
+                          articles=articles,
+                          average=average)
 
     def __get_interests__(self, interest_list: List[Dict]) -> List[Interest]:
         interests = []
@@ -53,13 +55,11 @@ class AuthorUseCase(UseCase):
                            not_available=available,
                            available=not_available)
 
-    def __get_data_table__(self, table: List[Dict]) -> Optional[DataTable]:
-        data_table = None
+    def __get_total_citations__(self, table: List[Dict]) -> Optional[int]:
+        total_citations = None
         if table:
-            data_table = DataTable(citations=table[0].get("citations").get("all"),
-                                   h_index=table[1].get("h_index").get("all"),
-                                   i10_index=table[2].get("i10_index").get("all"))
-        return data_table
+            total_citations = table[0].get("citations").get("all")
+        return total_citations
 
     def __get_data_graph_list__(self, graph_list: List[Dict[str, int]]) -> List[DataGraph]:
         data_graph_list = []
@@ -68,6 +68,14 @@ class AuthorUseCase(UseCase):
                 data_graph_list.append(DataGraph(year=graph.get("year"),
                                                  citations=graph.get("citations")))
         return data_graph_list
+
+    def __get_average__(self, data_graph_list: List[DataGraph]) -> int:
+        average = 0
+        if data_graph_list:
+            for data_graph in data_graph_list:
+                average += data_graph.citations
+            average = round(average / len(data_graph_list))
+        return average
 
     def __get_articles__(self, article_list: List[Dict[str, str]]) -> List[Article]:
         articles = []

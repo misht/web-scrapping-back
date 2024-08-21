@@ -1,7 +1,7 @@
 from typing import Dict, Any
 
 from src.domain.admin.model import Config
-from src.domain.author.model import Author, ArticleInfo, DataTable, DataGraph, Interest, Pagination, AuthorInfo, \
+from src.domain.author.model import Author, ArticleInfo, DataGraph, Interest, Pagination, AuthorInfo, \
     Article
 from src.domain.base import Mapper, Error
 from src.domain.user.model import User
@@ -43,16 +43,6 @@ class InterestMapper(BaseMapper):
         }
 
 
-class DataTableMapper(BaseMapper):
-
-    def to_dict(self, data_table: DataTable) -> Dict[str, int]:
-        return {
-            "citations": data_table.citations,
-            "h_index": data_table.h_index,
-            "i10_index": data_table.i10_index
-        }
-
-
 class DataGraphMapper(BaseMapper):
 
     def to_dict(self, data_graph: DataGraph) -> Dict[str, int]:
@@ -76,10 +66,9 @@ class ArticleMapper(BaseMapper):
 
 class AuthorInfoMapper(BaseMapper):
 
-    def __init__(self, article_info_mapper, interest_mapper, data_table_mapper, data_graph_mapper, article_mapper):
+    def __init__(self, article_info_mapper, interest_mapper, data_graph_mapper, article_mapper):
         self.article_info_mapper = article_info_mapper
         self.interest_mapper = interest_mapper
-        self.data_table_mapper = data_table_mapper
         self.data_graph_mapper = data_graph_mapper
         self.article_mapper = article_mapper
 
@@ -91,8 +80,9 @@ class AuthorInfoMapper(BaseMapper):
             "picture": author_info.picture,
             "article_info": self.article_info_mapper.to_dict(author_info.article_info),
             "cited_by": {
-                "table": self.data_table_mapper.to_dict(author_info.data_table),
-                "graph": [self.data_graph_mapper.to_dict(data_graph) for data_graph in author_info.data_graph_list]
+                "total_citations": author_info.total_citations,
+                "graph": [self.data_graph_mapper.to_dict(data_graph) for data_graph in author_info.data_graph_list],
+                "average": author_info.average
             },
             "articles": [self.article_mapper.to_dict(article) for article in author_info.articles],
             "open_to_collaborate": author_info.open_to_collaborate

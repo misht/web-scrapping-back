@@ -30,21 +30,6 @@ class ArticleInfo(Entity):
                        self.available))
 
 
-class DataTable(Entity):
-    def __init__(self, citations: int, h_index: int, i10_index: int):
-        self.citations = citations
-        self.h_index = h_index
-        self.i10_index = i10_index
-
-    def __repr__(self):
-        return ("<DataTable citations={}, "
-                "h_index={}, "
-                "available={}>".
-                format(self.citations,
-                       self.h_index,
-                       self.i10_index))
-
-
 class DataGraph(Entity):
     def __init__(self, year: int, citations: int):
         self.year = year
@@ -81,34 +66,37 @@ class Article(Entity):
 class AuthorInfo(Entity):
 
     def __init__(self, name: str, affiliations: str, interests: List[Interest], picture: str,
-                 article_info: ArticleInfo, data_table: DataTable, data_graph_list: List[DataGraph],
-                 articles: List[Article]):
+                 article_info: ArticleInfo, total_citations: int, data_graph_list: List[DataGraph],
+                 articles: List[Article], average: int):
         self.name = name
         self.affiliations = affiliations
         self.interests = interests
         self.picture = picture
         self.article_info = article_info
-        self.data_table = data_table
+        self.total_citations = total_citations
         self.data_graph_list = data_graph_list
         self.articles = articles
+        self.average = average
         self.open_to_collaborate = True
 
     def __repr__(self):
         return ("<AuthorInfo name={}, "
                 "affiliations={}, "
-                "={}, "
+                "interests={}, "
                 "picture={}, "
                 "article_info={},  "
-                "data_table={}, "
+                "total_citations={}, "
                 "data_graph_list={}, "
+                "average={}, "
                 "open_to_collaborate?={}>".
                 format(self.name,
                        self.affiliations,
                        self.interests,
                        self.picture,
                        self.article_info,
-                       self.data_table,
+                       self.total_citations,
                        self.data_graph_list,
+                       self.average,
                        self.open_to_collaborate))
 
 class Author(Entity):
