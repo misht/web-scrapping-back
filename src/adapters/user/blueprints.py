@@ -9,8 +9,9 @@ class UserBlueprint(Blueprint):
 
         @blueprint.route('/login', methods=('GET',))
         def login():
-            user = mappers.user_login_mapper.from_dict(flask.request.get_json())
-            logged_user = use_cases.user_use_case.login(user)
+            email = flask.request.args.get("email")
+            password = flask.request.args.get("password")
+            logged_user = use_cases.user_use_case.login(email, password)
             return flask.jsonify(mappers.user_mapper.to_dict(logged_user))
 
         @blueprint.route('/sign_up', methods=('POST',))

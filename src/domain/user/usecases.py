@@ -3,7 +3,7 @@ from src.domain.base import Error
 from src.domain.base import RepositoryBind
 from src.domain.base import UseCase
 from src.domain.user.model import User
-
+from config import Configuration
 
 class UserUseCase(UseCase):
 
@@ -11,7 +11,17 @@ class UserUseCase(UseCase):
         self.user_repository = repositories.user_repository
         self.config_repository = repositories.config_repository
 
-    def login(self, user: User) -> User:
+    def login(self, email: str, password: str) -> User:
+        if not email or not password:
+            raise Error.bad_request(message="Missing required keys: name and email",
+                                    error_code=Error.INCOMPLETE_DATA_CODE)
+        if not type(email) == str or not type(password) == str:
+            raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        if len(password) < Configuration.MINIMUM_NUMBER_CHARACTERS_FROM_PASSWORD:
+            raise Error.bad_request(message="Password should be at least 8 characters.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        user = User("", email, password, False, True)
         user_exist = self.user_repository.get_user_by_email(user)
         if user_exist is None:
             raise Error.bad_request(message="User with email {} does not exists".format(user.email),
