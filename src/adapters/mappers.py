@@ -147,25 +147,6 @@ class UserMapper(BaseMapper):
                 "open_to_collaborate": user.open_to_collaborate}
 
 
-class UserLoginMapper(BaseMapper):
-
-    def __parse_dict__(self, login_dict: Dict) -> User:
-        if "email" not in login_dict or "password" not in login_dict:
-            raise Error.bad_request(message="Missing required keys: name and email",
-                                    error_code=Error.INCOMPLETE_DATA_CODE)
-        if not type(login_dict["email"]) == str or not type(login_dict["password"]) == str:
-            raise Error.bad_request(message="Data type is invalid.",
-                                    error_code=Error.INVALID_CONFIGURATION_CODE)
-        if len(login_dict["password"]) < Configuration.MINIMUM_NUMBER_CHARACTERS_FROM_PASSWORD:
-            raise Error.bad_request(message="Password should be at least 8 characters.",
-                                    error_code=Error.INVALID_CONFIGURATION_CODE)
-        return User(name="",
-                    email=login_dict["email"],
-                    password=login_dict["password"],
-                    open_to_collaborate=False,
-                    user_terms_acceptance=True)
-
-
 class ConfigMapper(BaseMapper):
 
     def __parse_dict__(self, config_dict: Dict) -> Config:

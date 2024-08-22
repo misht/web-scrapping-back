@@ -42,7 +42,6 @@ class Mappers(MapperBind):
         self.pagination_mapper = PaginationMapper()
         self.author_mapper = AuthorMapper(self.interest_mapper, self.pagination_mapper)
         self.user_mapper = UserMapper()
-        self.user_login_mapper = UserLoginMapper()
         self.config_mapper = ConfigMapper()
 
 
