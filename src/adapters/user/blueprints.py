@@ -22,6 +22,7 @@ class UserBlueprint(Blueprint):
             saved_user = use_cases.user_use_case.sign_up(user)
             response = flask.jsonify(mappers.user_mapper.to_dict(saved_user))
             response.headers.add('Access-Control-Allow-Origin', '*')
+            response.headers.add('Access-Control-Allow-Methods', 'POST')
             return response
 
         @blueprint.route('/privacy_terms', methods=('GET',))
