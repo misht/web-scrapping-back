@@ -10,32 +10,23 @@ class UserBlueprint(Blueprint):
         @blueprint.route('/login', methods=('GET',))
         def login():
             email = flask.request.args.get("email")
-            password = flask.request.args.get("password")
-            logged_user = use_cases.user_use_case.login(email, password)
-            response = flask.jsonify(mappers.user_mapper.to_dict(logged_user))
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            return response
+            logged_user = use_cases.user_use_case.login(email)
+            return flask.jsonify(mappers.user_mapper.to_dict(logged_user))
 
         @blueprint.route('/sign_up', methods=('POST',))
         def sign_up():
             user = mappers.user_mapper.from_dict(flask.request.get_json())
             saved_user = use_cases.user_use_case.sign_up(user)
-            response = flask.jsonify(mappers.user_mapper.to_dict(saved_user))
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            return response
+            return flask.jsonify(mappers.user_mapper.to_dict(saved_user))
 
         @blueprint.route('/privacy_terms', methods=('GET',))
         def get_privacy_terms():
             privacy_terms = use_cases.user_use_case.get_privacy_terms()
-            response = flask.jsonify(mappers.config_mapper.to_dict(privacy_terms))
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            return response
+            return flask.jsonify(mappers.config_mapper.to_dict(privacy_terms))
 
         @blueprint.route('/user_terms', methods=('GET',))
         def get_user_terms():
             user_terms = use_cases.user_use_case.get_user_terms()
-            response = flask.jsonify(mappers.config_mapper.to_dict(user_terms))
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            return response
+            return flask.jsonify(mappers.config_mapper.to_dict(user_terms))
 
         return blueprint

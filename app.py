@@ -1,5 +1,7 @@
 import config
 import flask
+from flask_cors import CORS
+
 import src
 from src.bind import Bind
 from src.domain.base import Error
@@ -26,6 +28,7 @@ def create_app():
     global bind
     if app is None:
         app = flask.Flask(__name__)
+        CORS(app)
         # configuration = config.get_config()
         # app.config.from_object(configuration)
         # app.config.from_pyfile('config.py', silent=True)
