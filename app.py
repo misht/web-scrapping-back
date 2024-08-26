@@ -17,7 +17,7 @@ def register_blueprints():
 
 def initialize_bd():
     cred = credentials.Certificate(
-        "/home/mistigs/entorno_des/web-scrapping-back/src/wecollaborate1-10579-firebase-adminsdk-lst8w-494ba04746.json")
+        "./src/wecollaborate1-10579-firebase-adminsdk-lst8w-494ba04746.json")
     firebase_admin.initialize_app(cred)
 
 
