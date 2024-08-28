@@ -1,11 +1,10 @@
 from typing import Dict, Any
 
 from src.domain.admin.model import Config
-from src.domain.author.model import Author, ArticleInfo, DataGraph, Interest, Pagination, AuthorInfo, \
+from src.domain.author.model import Author, ArticleInfo, DataGraph, Pagination, AuthorInfo, \
     Article
 from src.domain.base import Mapper, Error
-from src.domain.user.model import User
-from config import Configuration
+from src.domain.user.model import User, Interest, UserInfo, SocialNetwork
 
 
 class BaseMapper(Mapper):
@@ -36,6 +35,15 @@ class ArticleInfoMapper(BaseMapper):
 
 class InterestMapper(BaseMapper):
 
+    def __parse_dict__(self, interest_dict: Dict) -> Interest:
+        if "title" not in interest_dict or "keyword" not in interest_dict:
+            raise Error.bad_request(message="Missing required keys: title and keyword",
+                                    error_code=Error.INCOMPLETE_DATA_CODE)
+        if not type(interest_dict["title"]) == str or not type(interest_dict["keyword"]) == str:
+            raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        return Interest(title=interest_dict["title"],
+                        keyword=interest_dict["keyword"])
     def to_dict(self, interest: Interest) -> Dict[str, str]:
         return {
             "title": interest.title,
@@ -132,9 +140,6 @@ class UserMapper(BaseMapper):
                 or not type(user_dict["user_terms_acceptance"]) == bool:
             raise Error.bad_request(message="Data type is invalid.",
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
-        if len(user_dict["password"]) < Configuration.MINIMUM_NUMBER_CHARACTERS_FROM_PASSWORD:
-            raise Error.bad_request(message="Password should be at least 8 characters.",
-                                    error_code=Error.INVALID_CONFIGURATION_CODE)
         return User(name=user_dict["name"],
                     email=user_dict["email"],
                     password=user_dict["password"],
@@ -145,6 +150,73 @@ class UserMapper(BaseMapper):
         return {"name": user.name,
                 "email": user.email,
                 "password": user.password}
+
+
+class SocialNetworkMapper(BaseMapper):
+
+    def __parse_dict__(self, social_network_dict: Dict) -> SocialNetwork:
+        if "name" not in social_network_dict or "url" not in social_network_dict:
+            raise Error.bad_request(message="Missing required keys: title and keyword",
+                                    error_code=Error.INCOMPLETE_DATA_CODE)
+        if not type(social_network_dict["name"]) == str or not type(social_network_dict["url"]) == str:
+            raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        return SocialNetwork(name=social_network_dict["name"],
+                             url=social_network_dict["url"])
+
+    def to_dict(self, social_network: SocialNetwork) -> Dict[str, str]:
+        return {
+            "name": social_network.name,
+            "url": social_network.url
+        }
+
+
+class UserInfoMapper(BaseMapper):
+
+    def __init__(self, interest_mapper, social_network_mapper):
+        self.interest_mapper = interest_mapper
+        self.social_network_mapper = social_network_mapper
+
+    def __parse_dict__(self, user_info_dict: Dict) -> UserInfo:
+        if "name" not in user_info_dict or "email" not in user_info_dict \
+                or "open_to_collaborate" not in user_info_dict or "picture" not in user_info_dict \
+                or "affiliation" not in user_info_dict or "schoolar_id" not in user_info_dict \
+                or "phone" not in user_info_dict or "interests" not in user_info_dict \
+                or "ssnn" not in user_info_dict:
+            raise Error.bad_request(message="Missing required keys: name, email, open_to_collaborate, picture, "
+                                            "affiliation, schoolar_id, phone, interests and ssnn.",
+                                    error_code=Error.INCOMPLETE_DATA_CODE)
+        if not type(user_info_dict["name"]) == str or not type(user_info_dict["email"]) == str \
+                or not type(user_info_dict["open_to_collaborate"]) == bool \
+                or not type(user_info_dict["picture"]) == str or not type(user_info_dict["affiliation"]) == str \
+                or not type(user_info_dict["schoolar_id"]) == str or not type(user_info_dict["phone"]) == str \
+                or not type(user_info_dict["interests"]) == list or not type(user_info_dict["ssnn"]) == list:
+            raise Error.bad_request(message="Data type is invalid.",
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        return UserInfo(name=user_info_dict["name"],
+                        email=user_info_dict["email"],
+                        open_to_collaborate=user_info_dict["open_to_collaborate"],
+                        picture=user_info_dict["picture"],
+                        affiliation=user_info_dict["affiliation"],
+                        schoolar_id=user_info_dict["schoolar_id"],
+                        phone=user_info_dict["phone"],
+                        interests=[self.interest_mapper.from_dict(interest)
+                                   for interest in user_info_dict["interests"]],
+                        social_networks=[self.social_network_mapper.from_dict(sn)
+                                         for sn in user_info_dict["ssnn"]])
+
+    def to_dict(self, user_info: UserInfo) -> Dict[str, Any]:
+        return {
+            "name": user_info.name,
+            "email": user_info.email,
+            "open_to_collaborate": user_info.open_to_collaborate,
+            "picture": user_info.picture,
+            "affiliation": user_info.affiliation,
+            "schoolar_id": user_info.schoolar_id,
+            "phone": user_info.phone,
+            "interests": [self.interest_mapper.to_dict(interest) for interest in user_info.interests],
+            "ssnn": [self.social_network_mapper.to_dict(social_network) for social_network in user_info.social_networks]
+        }
 
 
 class ConfigMapper(BaseMapper):
@@ -159,5 +231,7 @@ class ConfigMapper(BaseMapper):
         return Config(key=config_dict["key"],
                       value=config_dict["value"])
 
-    def to_dict(self, config: Config) -> Dict[str, Any]:
-        return {"value": config.value}
+    def to_dict(self, config: Config) -> Dict[str, str]:
+        return {
+            "value": config.value
+        }

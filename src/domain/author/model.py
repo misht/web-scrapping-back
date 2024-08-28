@@ -1,18 +1,7 @@
-from typing import Dict, List, Optional
+from typing import List
 
 from src.domain.base import Entity
-
-
-class Interest(Entity):
-    def __init__(self, title: str, keyword: str):
-        self.title = title
-        self.keyword = keyword
-
-    def __repr__(self):
-        return ("<Interest title={}, "
-                "keyword={}>".
-                format(self.title,
-                       self.keyword))
+from src.domain.user.model import Interest
 
 
 class ArticleInfo(Entity):

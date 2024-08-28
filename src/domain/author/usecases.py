@@ -2,8 +2,8 @@ from typing import Dict, List, Optional, Any, Tuple
 
 from serpapi import GoogleSearch
 
-from src.domain.author.model import DataGraph, ArticleInfo, AuthorInfo, Interest, \
-    Author, Pagination, Article
+from src.domain.author.model import DataGraph, ArticleInfo, AuthorInfo, Author, Pagination, Article
+from src.domain.user.model import Interest
 from src.domain.base import UseCase
 from src.domain.base import Error
 

@@ -29,4 +29,16 @@ class UserBlueprint(Blueprint):
             user_terms = use_cases.user_use_case.get_user_terms()
             return flask.jsonify(mappers.config_mapper.to_dict(user_terms))
 
+        @blueprint.route('/user_info', methods=('GET',))
+        def get_user_info():
+            email = flask.request.args.get("email")
+            user_info = use_cases.user_use_case.get_user_info(email)
+            return flask.jsonify(mappers.user_info_mapper.to_dict(user_info))
+
+        @blueprint.route('/user_info', methods=('PUT',))
+        def edit_user_info():
+            user_info = mappers.user_info_mapper.from_dict(flask.request.get_json())
+            edited_user_info = use_cases.user_use_case.edit_user_info(user_info)
+            return flask.jsonify(mappers.user_info_mapper.to_dict(edited_user_info))
+
         return blueprint

@@ -16,6 +16,7 @@ class Repositories(RepositoryBind):
     def __init__(self):
         self.user_repository = FirestoreUserRepository()
         self.config_repository = FirestoreConfigRepository()
+        self.user_info_repository = FirestoreUserInfoRepository()
 
 
 class Services(ServiceBind):
@@ -43,6 +44,8 @@ class Mappers(MapperBind):
         self.author_mapper = AuthorMapper(self.interest_mapper, self.pagination_mapper)
         self.user_mapper = UserMapper()
         self.config_mapper = ConfigMapper()
+        self.social_network_mapper = SocialNetworkMapper()
+        self.user_info_mapper = UserInfoMapper(self.interest_mapper, self.social_network_mapper)
 
 
 class Bind:
