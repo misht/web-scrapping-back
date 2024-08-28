@@ -144,8 +144,7 @@ class UserMapper(BaseMapper):
     def to_dict(self, user: User) -> Dict[str, Any]:
         return {"name": user.name,
                 "email": user.email,
-                "password": user.password,
-                "open_to_collaborate": user.open_to_collaborate}
+                "password": user.password}
 
 
 class ConfigMapper(BaseMapper):
