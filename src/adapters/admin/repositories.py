@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from src.adapters.base import FirestoreRepository
 from src.domain.admin.model import Config
@@ -23,7 +23,7 @@ class FirestoreConfigRepository(FirestoreRepository, ConfigRepository):
         self.__save__(config)
         return config
 
-    def get_by_key(self, config: Config) -> Config:
+    def get_by_key(self, config: Config) -> Optional[Config]:
         config = self.__get_by_name__(config)
         return config
 
@@ -50,8 +50,12 @@ class FirestoreInterestRepository(FirestoreRepository, ConfigRepository):
         self.__save__(interest)
         return interest
 
-    def get_by_key(self, interest: Interest) -> Interest:
+    def get_by_key(self, interest: Interest) -> Optional[Interest]:
         interest = self.__get_by_name__(interest)
+        return interest
+
+    def get_by_attribute(self, interest_id: str) -> Optional[Interest]:
+        interest = self.__get_by_attribute__(interest_id)
         return interest
 
     def delete_by_key(self, interest: Interest):

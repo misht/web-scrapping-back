@@ -17,18 +17,17 @@ class ConfigBlueprint(Blueprint):
         def add_interest():
             interest = mappers.interest_admin_mapper.from_dict(flask.request.get_json())
             saved_interest = use_cases.interest_use_case.add_interest(interest)
-            return flask.jsonify(mappers.interest_mapper.to_dict(saved_interest))
+            return flask.jsonify(mappers.interest_admin_mapper.to_dict(saved_interest))
 
         @blueprint.route('/interest', methods=('PUT',))
         def edit_interest():
             interest = mappers.interest_admin_mapper.from_dict(flask.request.get_json())
             saved_interest = use_cases.interest_use_case.edit_interest(interest)
-            return flask.jsonify(mappers.interest_mapper.to_dict(saved_interest))
+            return flask.jsonify(mappers.interest_admin_mapper.to_dict(saved_interest))
 
-        @blueprint.route('/interest', methods=('DELETE',))
-        def delete_interest():
-            interest = mappers.interest_admin_mapper.from_dict(flask.request.get_json())
-            saved_interest = use_cases.interest_use_case.delete_interest(interest)
-            return flask.jsonify(mappers.interest_mapper.to_dict(saved_interest))
+        @blueprint.route('/interest/<interest_id>', methods=('DELETE',))
+        def delete_interest(interest_id: str):
+            saved_interest = use_cases.interest_use_case.delete_interest(interest_id)
+            return flask.jsonify(mappers.interest_admin_mapper.to_dict(saved_interest))
 
         return blueprint

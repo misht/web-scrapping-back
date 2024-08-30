@@ -45,10 +45,10 @@ class InterestUseCase(UseCase):
         saved_interest = self.interest_repository.save(exist_interest)
         return saved_interest
 
-    def delete_interest(self, interest: Interest) -> Interest:
-        exist_interest = self.interest_repository.get_by_key(interest)
+    def delete_interest(self, interest_id: str) -> Interest:
+        exist_interest = self.interest_repository.get_by_attribute(interest_id)
         if exist_interest is None:
-            raise Error.bad_request(message="Interest with name {} does not exist.".format(interest.title),
+            raise Error.bad_request(message="Interest with name {} does not exist.".format(interest_id),
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
-        saved_interest = self.interest_repository.save(exist_interest)
-        return saved_interest
+        self.interest_repository.delete_by_key(exist_interest)
+        return exist_interest

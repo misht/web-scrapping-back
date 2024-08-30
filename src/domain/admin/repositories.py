@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Optional
 
 from src.domain.admin.model import Config
 from src.domain.base import Repository
@@ -12,7 +13,7 @@ class ConfigRepository(Repository):
         pass
 
     @abstractmethod
-    def get_by_key(self, config: Config) -> Config:
+    def get_by_key(self, config: Config) -> Optional[Config]:
         pass
 
 
@@ -23,9 +24,13 @@ class InterestRepository(Repository):
         pass
 
     @abstractmethod
-    def get_by_key(self, interest: Interest) -> Interest:
+    def get_by_key(self, interest: Interest) -> Optional[Interest]:
         pass
 
     @abstractmethod
     def delete_by_key(self, interest: Interest):
+        pass
+
+    @abstractmethod
+    def get_by_attribute(self, interest_id: str) -> Optional[Interest]:
         pass

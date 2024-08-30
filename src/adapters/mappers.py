@@ -254,5 +254,6 @@ class InterestAdminMapper(BaseMapper):
     def to_dict(self, interest: Interest) -> Dict[str, str]:
         return {
             "title": interest.title,
-            "keyword": interest.keyword
+            "keyword": interest.keyword,
+            "main_category": interest.main_category
         }
