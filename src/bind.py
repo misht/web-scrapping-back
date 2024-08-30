@@ -17,6 +17,7 @@ class Repositories(RepositoryBind):
         self.user_repository = FirestoreUserRepository()
         self.config_repository = FirestoreConfigRepository()
         self.user_info_repository = FirestoreUserInfoRepository()
+        self.interest_repository = FirestoreInterestRepository()
 
 
 class Services(ServiceBind):
@@ -30,6 +31,7 @@ class UseCases(UseCaseBind):
         self.author_use_case = AuthorUseCase()
         self.user_use_case = UserUseCase(repositories)
         self.config_use_case = ConfigUseCase(repositories)
+        self.interest_use_case = InterestUseCase(repositories)
 
 
 class Mappers(MapperBind):
@@ -46,6 +48,7 @@ class Mappers(MapperBind):
         self.config_mapper = ConfigMapper()
         self.social_network_mapper = SocialNetworkMapper()
         self.user_info_mapper = UserInfoMapper(self.interest_mapper, self.social_network_mapper)
+        self.interest_admin_mapper  = InterestAdminMapper()
 
 
 class Bind:

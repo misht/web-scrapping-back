@@ -38,3 +38,6 @@ class FirestoreRepository(metaclass=ABCMeta):
         doc_ref = self.client.collection(self.__get_kind__()).document(attribute)
         doc = doc_ref.get()
         return self.__entity_to_object__(doc.to_dict()) if doc.exists else None
+
+    def __delete_document__(self, obj: Any):
+        doc_ref = self.client.collection(self.__get_kind__()).document(self.__get_name__(obj)).delete()

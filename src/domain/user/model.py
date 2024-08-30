@@ -26,15 +26,18 @@ class User(Entity):
 
 
 class Interest(Entity):
-    def __init__(self, title: str, keyword: str):
+    def __init__(self, title: str, keyword: str, main_category: str = None):
         self.title = title
         self.keyword = keyword
+        self.main_category = main_category
 
     def __repr__(self):
         return ("<Interest title={}, "
-                "keyword={}>".
+                "keyword={}, "
+                "main_category={}>".
                 format(self.title,
-                       self.keyword))
+                       self.keyword,
+                       self.main_category))
 
 
 class SocialNetwork(Entity):
