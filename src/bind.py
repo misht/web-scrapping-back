@@ -49,6 +49,7 @@ class Mappers(MapperBind):
         self.social_network_mapper = SocialNetworkMapper()
         self.user_info_mapper = UserInfoMapper(self.interest_mapper, self.social_network_mapper)
         self.interest_admin_mapper  = InterestAdminMapper()
+        self.user_interest_mapper = UserInterestMapper(self.interest_mapper)
 
 
 class Bind:

@@ -49,10 +49,8 @@ class FirestoreUserInfoRepository(FirestoreRepository, UserInfoRepository):
                 "affiliation": user_info.affiliation,
                 "schoolar_id": user_info.schoolar_id,
                 "phone": user_info.phone,
-                "interests": [{"title": interest.title, "keyword": interest.keyword}
-                              for interest in user_info.interests],
-                "social_networks": [{"name": sn.name, "url": sn.url}
-                                    for sn in user_info.social_networks]
+                "interests": [interest.to_dict() for interest in user_info.interests],
+                "social_networks": [sn.to_dict() for sn in user_info.social_networks]
                 }
 
     def __entity_to_object__(self, entity: Dict[str, any]) -> UserInfo:
@@ -63,7 +61,8 @@ class FirestoreUserInfoRepository(FirestoreRepository, UserInfoRepository):
                         affiliation=entity["affiliation"],
                         schoolar_id=entity["schoolar_id"],
                         phone=entity["phone"],
-                        interests=[Interest(interest.get("title"), interest.get("keyword"))
+                        interests=[Interest(interest.get("title"), interest.get("keyword"),
+                                            interest.get("main_category"))
                                    for interest in entity["interests"]],
                         social_networks=[SocialNetwork(sn.get("name"), sn.get("url"))
                                          for sn in entity["social_networks"]])

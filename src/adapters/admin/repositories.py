@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from src.adapters.base import FirestoreRepository
 from src.domain.admin.model import Config
@@ -61,6 +61,10 @@ class FirestoreInterestRepository(FirestoreRepository, ConfigRepository):
     def delete_by_key(self, interest: Interest):
         self.__delete_document__(interest)
         return interest
+
+    def list_all(self) -> List[Interest]:
+        interests = self.__list_all__()
+        return interests
 
     def __get_kind__(self) -> str:
         return "Interest"

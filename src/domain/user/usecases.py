@@ -1,8 +1,10 @@
+from typing import Tuple, List
+
 from src.domain.admin.model import Config
 from src.domain.base import Error
 from src.domain.base import RepositoryBind
 from src.domain.base import UseCase
-from src.domain.user.model import User, UserInfo
+from src.domain.user.model import User, UserInfo, Interest
 
 
 class UserUseCase(UseCase):
@@ -11,6 +13,7 @@ class UserUseCase(UseCase):
         self.user_repository = repositories.user_repository
         self.config_repository = repositories.config_repository
         self.user_info_repository = repositories.user_info_repository
+        self.interest_repository = repositories.interest_repository
 
     def login(self, email: str) -> User:
         if not email:
@@ -75,3 +78,11 @@ class UserUseCase(UseCase):
         user_info_exist.social_networks = user_info.social_networks
         saved_user_info = self.user_info_repository.save(user_info_exist)
         return saved_user_info
+
+    def get_interests(self, email: str) -> Tuple[List[Interest], List[Interest]]:
+        user_interests = []
+        interests = self.interest_repository.list_all()
+        user_info = self.user_info_repository.get_user_by_email(email)
+        if user_info is not None:
+            user_interests = user_info.interests
+        return interests, user_interests

@@ -31,6 +31,9 @@ class Interest(Entity):
         self.keyword = keyword
         self.main_category = main_category
 
+    def to_dict(self):
+        return {"title": self.title, "keyword": self.keyword, "main_category": self.main_category}
+
     def __repr__(self):
         return ("<Interest title={}, "
                 "keyword={}, "
@@ -45,6 +48,9 @@ class SocialNetwork(Entity):
     def __init__(self, name: str, url: str):
         self.name = name
         self.url = url
+
+    def to_dict(self):
+        return {"name": self.name, "url": self.url}
 
     def __repr__(self):
         return ("<SocialNetwork name={}, "

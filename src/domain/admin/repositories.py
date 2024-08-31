@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Optional
+from typing import Optional, List
 
 from src.domain.admin.model import Config
 from src.domain.base import Repository
@@ -29,6 +29,10 @@ class InterestRepository(Repository):
 
     @abstractmethod
     def delete_by_key(self, interest: Interest):
+        pass
+
+    @abstractmethod
+    def list_all(self) -> List[Interest]:
         pass
 
     @abstractmethod

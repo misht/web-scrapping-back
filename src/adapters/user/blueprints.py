@@ -41,4 +41,10 @@ class UserBlueprint(Blueprint):
             edited_user_info = use_cases.user_use_case.edit_user_info(user_info)
             return flask.jsonify(mappers.user_info_mapper.to_dict(edited_user_info))
 
+        @blueprint.route('/interests', methods=('GET',))
+        def get_interests():
+            email = flask.request.args.get("email")
+            interests, user_interests = use_cases.user_use_case.get_interests(email)
+            return flask.jsonify(mappers.user_interest_mapper.to_dict(interests, user_interests))
+
         return blueprint

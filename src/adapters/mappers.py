@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from src.domain.admin.model import Config
 from src.domain.author.model import Author, ArticleInfo, DataGraph, Pagination, AuthorInfo, \
@@ -256,4 +256,37 @@ class InterestAdminMapper(BaseMapper):
             "title": interest.title,
             "keyword": interest.keyword,
             "main_category": interest.main_category
+        }
+
+
+class UserInterestMapper(BaseMapper):
+
+    def __init__(self, interest_mapper):
+        self.interest_mapper = interest_mapper
+
+    def to_dict(self, interests: List[Interest], user_interests: List[Interest]):
+        a, b = {}, {}
+
+        for interest in interests:
+            if interest.main_category not in a:
+                a[interest.main_category] = [interest]
+            else:
+                a[interest.main_category].append(interest)
+
+        for user_interest in user_interests:
+            if user_interest.main_category not in b:
+                b[user_interest.main_category] = [user_interest]
+            else:
+                b[user_interest.main_category].append(user_interest)
+
+        return {
+            "interests": [
+                {"main_category": key,
+                 "subcategories":[self.interest_mapper.to_dict(interest) for interest in interests]}
+                 for key, interests in a.items()],
+            "user_interests": [
+                {"main_category": key,
+                 "subcategories": [self.interest_mapper.to_dict(interest) for interest in interests]}
+                for key, interests in b.items()
+            ]
         }
