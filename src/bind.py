@@ -47,10 +47,11 @@ class Mappers(MapperBind):
         self.user_mapper = UserMapper()
         self.config_mapper = ConfigMapper()
         self.social_network_mapper = SocialNetworkMapper()
-        self.user_info_mapper = UserInfoMapper(self.interest_mapper, self.social_network_mapper)
-        self.interest_admin_mapper  = InterestAdminMapper()
+        self.interest_admin_mapper = InterestAdminMapper()
+        self.user_info_mapper = UserInfoMapper(self.interest_admin_mapper, self.social_network_mapper)
         self.user_interest_mapper = UserInterestMapper(self.interest_mapper)
         self.second_article_mapper = SecondArticleMapper()
+        self.interests_mapper = InterestsMapper(self.interest_admin_mapper)
 
 
 class Bind:

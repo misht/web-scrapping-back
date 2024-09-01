@@ -174,8 +174,8 @@ class SocialNetworkMapper(BaseMapper):
 
 class UserInfoMapper(BaseMapper):
 
-    def __init__(self, interest_mapper, social_network_mapper):
-        self.interest_mapper = interest_mapper
+    def __init__(self, interest_admin_mapper, social_network_mapper):
+        self.interest_admin_mapper = interest_admin_mapper
         self.social_network_mapper = social_network_mapper
 
     def __parse_dict__(self, user_info_dict: Dict) -> UserInfo:
@@ -201,7 +201,7 @@ class UserInfoMapper(BaseMapper):
                         affiliation=user_info_dict["affiliation"],
                         schoolar_id=user_info_dict["schoolar_id"],
                         phone=user_info_dict["phone"],
-                        interests=[self.interest_mapper.from_dict(interest)
+                        interests=[self.interest_admin_mapper.from_dict(interest)
                                    for interest in user_info_dict["interests"]],
                         social_networks=[self.social_network_mapper.from_dict(sn)
                                          for sn in user_info_dict["ssnn"]])
@@ -215,7 +215,7 @@ class UserInfoMapper(BaseMapper):
             "affiliation": user_info.affiliation,
             "schoolar_id": user_info.schoolar_id,
             "phone": user_info.phone,
-            "interests": [self.interest_mapper.to_dict(interest) for interest in user_info.interests],
+            "interests": [self.interest_admin_mapper.to_dict(interest) for interest in user_info.interests],
             "ssnn": [self.social_network_mapper.to_dict(social_network) for social_network in user_info.social_networks]
         }
 
@@ -258,6 +258,15 @@ class InterestAdminMapper(BaseMapper):
             "keyword": interest.keyword,
             "main_category": interest.main_category
         }
+
+
+class InterestsMapper(BaseMapper):
+
+    def __init__(self, interest_admin_mapper):
+        self.interest_admin_mapper = interest_admin_mapper
+
+    def __parse_dict__(self, interest_list: List[Dict]) -> List[Interest]:
+       return [self.interest_admin_mapper.from_dict(interest) for interest in interest_list]
 
 
 class UserInterestMapper(BaseMapper):

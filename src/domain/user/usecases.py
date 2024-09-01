@@ -61,9 +61,8 @@ class UserUseCase(UseCase):
 
     def edit_user_info(self, user_info: UserInfo) -> UserInfo:
         user_info_exist = self.user_info_repository.get_user_by_email(user_info.email)
-        print(f'user_info_exist: {user_info_exist}')
         if user_info_exist is None:
-            raise Error.bad_request(message="User with email {} does not exists.".format(user_info.email),
+            raise Error.bad_request(message="User info with email {} does not exists.".format(user_info.email),
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
         if user_info_exist.email != user_info.email:
             raise Error.bad_request(message="Email can not be changed.",
@@ -86,3 +85,12 @@ class UserUseCase(UseCase):
         if user_info is not None:
             user_interests = user_info.interests
         return interests, user_interests
+
+    def add_interests(self, interests: List[Interest], email: str):
+        user_info_exist = self.user_info_repository.get_user_by_email(email)
+        if user_info_exist is None:
+            raise Error.bad_request(message="User info with email {} does not exists.".format(email),
+                                    error_code=Error.INVALID_CONFIGURATION_CODE)
+        user_info_exist.interests = interests
+        saved_user_info = self.user_info_repository.save(user_info_exist)
+        return saved_user_info
