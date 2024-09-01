@@ -89,8 +89,8 @@ class AuthorUseCase(UseCase):
 
 
 
-    def search_authors_by_interests(self, label: str, next_page: Optional[str],
-                                   previous_page: Optional[str]) -> Tuple[List[Author], Pagination]:
+    def search_authors_by_interests(self, label: str, next_page: Optional[str] = None,
+                                   previous_page: Optional[str] = None) -> Tuple[List[Author], Pagination]:
         if next_page and previous_page:
             raise Error.bad_request(message="You can only provide next page or previous page",
                                     error_code=Error.INVALID_CONFIGURATION_CODE)

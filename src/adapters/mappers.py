@@ -5,6 +5,7 @@ from src.domain.author.model import Author, ArticleInfo, DataGraph, Pagination, 
     Article
 from src.domain.base import Mapper, Error
 from src.domain.user.model import User, Interest, UserInfo, SocialNetwork
+from src.domain.article.model import Article
 
 
 class BaseMapper(Mapper):
@@ -289,4 +290,16 @@ class UserInterestMapper(BaseMapper):
                  "subcategories": [self.interest_mapper.to_dict(interest) for interest in interests]}
                 for key, interests in b.items()
             ]
+        }
+
+
+class SecondArticleMapper(BaseMapper):
+
+    def to_dict(self, article: Article) -> Dict[str, int]:
+        return {
+            "title": article.title,
+            "link": article.link,
+            "authors": article.authors,
+            "cited_by": article.cited_by,
+            "snippet": article.snippet
         }

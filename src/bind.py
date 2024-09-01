@@ -2,13 +2,13 @@ from src.adapters.admin.blueprints import ConfigBlueprint
 from src.adapters.admin.repositories import *
 from src.adapters.author.blueprints import AuthorBlueprint
 from src.adapters.mappers import *
-from src.adapters.publication.blueprints import PublicationBlueprint
+from src.adapters.article.blueprints import ArticleBlueprint
 from src.adapters.user.blueprints import *
 from src.adapters.user.repositories import *
 from src.domain.admin.usecases import *
 from src.domain.author.usecases import *
 from src.domain.base import ServiceBind, UseCaseBind, MapperBind
-from src.domain.publication.usecases import *
+from src.domain.article.usecases import *
 from src.domain.user.usecases import *
 
 
@@ -27,11 +27,11 @@ class Services(ServiceBind):
 
 class UseCases(UseCaseBind):
     def __init__(self, repositories: RepositoryBind):
-        self.publication_use_case = PublicationUseCase()
         self.author_use_case = AuthorUseCase()
         self.user_use_case = UserUseCase(repositories)
         self.config_use_case = ConfigUseCase(repositories)
         self.interest_use_case = InterestUseCase(repositories)
+        self.article_use_case = ArticleUseCase(self.author_use_case)
 
 
 class Mappers(MapperBind):
@@ -50,6 +50,7 @@ class Mappers(MapperBind):
         self.user_info_mapper = UserInfoMapper(self.interest_mapper, self.social_network_mapper)
         self.interest_admin_mapper  = InterestAdminMapper()
         self.user_interest_mapper = UserInterestMapper(self.interest_mapper)
+        self.second_article_mapper = SecondArticleMapper()
 
 
 class Bind:
@@ -60,7 +61,7 @@ class Bind:
         mappers = Mappers()
         self.blueprints = [
             UserBlueprint.create(use_cases, mappers),
-            PublicationBlueprint.create(use_cases),
+            ArticleBlueprint.create(use_cases, mappers),
             AuthorBlueprint.create(use_cases, mappers),
             ConfigBlueprint.create(use_cases, mappers)
         ]
