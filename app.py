@@ -23,6 +23,17 @@ def initialize_bd():
     firebase_admin.initialize_app(cred)
 
 
+def register_error_handlers():
+
+    @app.errorhandler(Error)
+    def handle_bad_request(error: Error):
+        return flask.make_response(flask.jsonify(error.__dict__), error.code)
+
+    @app.errorhandler(Exception)
+    def handle_internal_server(exception):
+        return flask.make_response("{}: {}".format(type(exception).__name__, str(exception)), 500)
+
+
 def create_app():
     global app
     global bind
@@ -34,6 +45,7 @@ def create_app():
         # app.config.from_pyfile('config.py', silent=True)
         initialize_bd()
         bind = Bind()
+        register_error_handlers()
         register_blueprints()
 
         @app.route('/')
