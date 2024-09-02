@@ -122,3 +122,15 @@ class AuthorUseCase(UseCase):
     def __get_pagination__(self, pagination: Dict[str, str]) -> Pagination:
         return Pagination(next_page=pagination.get("next_page_token"),
                           previous_page=pagination.get("previous_page_token"))
+
+
+    def search_authors_by_name(self, query: str):
+        params = {
+            "engine": "google_scholar_profiles",
+            "mauthors": query,
+            "api_key": "38218a76b3271180ba520332701ad7943bba5a1f07ffd370d5fae6e73de70a88"
+        }
+        search = GoogleSearch(params)
+        results = search.get_dict()
+        profiles = self.__get_authors__(results.get("profiles"))
+        return profiles

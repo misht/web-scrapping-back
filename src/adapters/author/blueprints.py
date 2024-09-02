@@ -23,4 +23,11 @@ class AuthorBlueprint(Blueprint):
             response_dict.update(mappers.pagination_mapper.to_dict(pagination))
             return flask.jsonify(response_dict)
 
+        @blueprint.route('/search_authors_by_name', methods=('GET',))
+        def search_authors_by_name():
+            query = flask.request.args.get("query")
+            authors = use_cases.author_use_case.search_authors_by_name(query)
+            return flask.jsonify({
+                "authors": [mappers.author_mapper.to_dict(author) for author in authors]
+            })
         return blueprint
