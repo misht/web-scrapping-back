@@ -1,5 +1,6 @@
 import flask
 from src.domain.base import Blueprint, UseCaseBind, MapperBind
+from urllib import parse
 
 
 class ArticleBlueprint(Blueprint):
@@ -18,7 +19,9 @@ class ArticleBlueprint(Blueprint):
         @blueprint.route('/search_articles_and_authors', methods=('GET',))
         def search_articles_and_authors():
             query = flask.request.args.get("query")
+            query = parse.quote(query)
             label = flask.request.args.get("label")
+            label = parse.quote(label)
             articles, authors = use_cases.article_use_case.search_articles_and_authors(query, label)
             response = flask.jsonify(
                 {"authors": [mappers.author_mapper.to_dict(author) for author in authors],
