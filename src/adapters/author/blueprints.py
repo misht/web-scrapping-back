@@ -19,7 +19,7 @@ class AuthorBlueprint(Blueprint):
         @blueprint.route('/search_authors_by_interests', methods=('GET',))
         def search_authors_by_interests():
             label = flask.request.args.get("label")
-            label = urllib.parse.quote_plus(label)
+            label = urllib.parse.unquote_plus(label)
             next_page = flask.request.args.get("next_page")
             previous_page = flask.request.args.get("previous_page")
             authors, pagination = use_cases.author_use_case.search_authors_by_interests(label, next_page, previous_page)
@@ -30,7 +30,7 @@ class AuthorBlueprint(Blueprint):
         @blueprint.route('/search_authors_by_name', methods=('GET',))
         def search_authors_by_name():
             query = flask.request.args.get("query")
-            query = urllib.parse.quote(query)
+            query = parse.unquote_plus(query)
             authors = use_cases.author_use_case.search_authors_by_name(query)
             return flask.jsonify({
                 "authors": [mappers.author_mapper.to_dict(author) for author in authors]
