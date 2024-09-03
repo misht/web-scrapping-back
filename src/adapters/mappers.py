@@ -241,15 +241,15 @@ class ConfigMapper(BaseMapper):
 class InterestAdminMapper(BaseMapper):
 
     def __parse_dict__(self, interest_admin_dict: Dict) -> Interest:
-        if "name" not in interest_admin_dict or "keyword" not in interest_admin_dict \
+        if "title" not in interest_admin_dict or "keyword" not in interest_admin_dict \
                 or "main_category" not in interest_admin_dict:
             raise Error.bad_request(message="Missing required keys: name, keyword and main_category",
                                     error_code=Error.INCOMPLETE_DATA_CODE)
-        if not type(interest_admin_dict["name"]) == str or not type(interest_admin_dict["keyword"]) == str \
+        if not type(interest_admin_dict["title"]) == str or not type(interest_admin_dict["keyword"]) == str \
                 or not type(interest_admin_dict["main_category"]) == str:
             raise Error.bad_request(message="Data type is invalid.",
                                     error_code=Error.INVALID_CONFIGURATION_CODE)
-        return Interest(title=interest_admin_dict["name"],
+        return Interest(title=interest_admin_dict["title"],
                         keyword=interest_admin_dict["keyword"],
                         main_category=interest_admin_dict["main_category"])
     def to_dict(self, interest: Interest) -> Dict[str, str]:
