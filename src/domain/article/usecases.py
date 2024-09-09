@@ -16,7 +16,7 @@ class ArticleUseCase(UseCase):
         params = {
             "engine": "google_scholar",
             "q": query,
-            "api_key": "d9f6757f8c03b67dce2a73f3ab5109697e4c795b6ff63dac5acfad099960a4b1",
+            "api_key": "0b5341dfd388c975ef854c38b132de28a24d799a5b41de9177e47afae29a2593",
             "start": start
         }
         search = GoogleSearch(params)

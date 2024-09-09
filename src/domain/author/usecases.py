@@ -14,7 +14,7 @@ class AuthorUseCase(UseCase):
         params = {
             "engine": "google_scholar_author",
             "author_id": author_id,
-            "api_key": "d9f6757f8c03b67dce2a73f3ab5109697e4c795b6ff63dac5acfad099960a4b1"
+            "api_key": "0b5341dfd388c975ef854c38b132de28a24d799a5b41de9177e47afae29a2593"
         }
         search = GoogleSearch(params)
         results = search.get_dict()
@@ -97,7 +97,7 @@ class AuthorUseCase(UseCase):
         params = {
             "engine": "google_scholar_profiles",
             "mauthors": f'label:{label}',
-            "api_key": "d9f6757f8c03b67dce2a73f3ab5109697e4c795b6ff63dac5acfad099960a4b1",
+            "api_key": "0b5341dfd388c975ef854c38b132de28a24d799a5b41de9177e47afae29a2593",
             "after_author": next_page,
             "before_author": previous_page
         }
@@ -128,7 +128,7 @@ class AuthorUseCase(UseCase):
         params = {
             "engine": "google_scholar_profiles",
             "mauthors": query,
-            "api_key": "d9f6757f8c03b67dce2a73f3ab5109697e4c795b6ff63dac5acfad099960a4b1"
+            "api_key": "0b5341dfd388c975ef854c38b132de28a24d799a5b41de9177e47afae29a2593"
         }
         search = GoogleSearch(params)
         results = search.get_dict()
