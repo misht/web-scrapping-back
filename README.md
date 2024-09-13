@@ -1,4 +1,4 @@
-# Web Scrapping Back
+# WeCollaborate Back
 
 WeCollaborate is a web application
 designed to encourage collaboration between users in the academic and research
